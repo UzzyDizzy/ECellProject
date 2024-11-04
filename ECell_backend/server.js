@@ -1,4 +1,4 @@
-/*
+
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -13,14 +13,15 @@ app.use(express.json());
 const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/ecellhero";
 
 // MongoDB connection
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoURI)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log(err));
 
 // Updated endpoint to retrieve hero content from MongoDB
 app.get('/api/hero-content', async (req, res) => {
   try {
-    const heroContent = await HeroContent.findOne(); // Fetches the first document from the collection
+    const heroContent = await HeroContent.findOne();
+    console.log("Fetched hero content:", heroContent); // Fetches the first document from the collection
     if (!heroContent) {
       return res.status(404).json({ message: "Hero content not found" });
     }
@@ -30,8 +31,11 @@ app.get('/api/hero-content', async (req, res) => {
     res.status(500).json({ message: "Error fetching hero content" });
   }
 });
-*/
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
+
+/*
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -60,3 +64,4 @@ app.get('/api/hero-content', (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
+*/
