@@ -23,11 +23,11 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 // Endpoint to retrieve hero content from MongoDB
 app.get('/api/hero-content', async (req, res) => {
   try {
-    const heroContent = await HeroContent.find(); // Retrieves all documents from the collection
-    if (!heroContent || heroContent.length === 0) {
+    const heroContent = await HeroContent.findOne(); // Retrieve only the first document
+    if (!heroContent) {
       return res.status(404).json({ message: "Hero content not found" });
     }
-    res.json(heroContent);
+    res.json(heroContent); // Send the single document directly
   } catch (error) {
     console.error("Error fetching hero content:", error);
     res.status(500).json({ message: "Error fetching hero content" });
