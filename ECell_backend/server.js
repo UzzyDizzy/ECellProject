@@ -1,67 +1,39 @@
+// server.js
 
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+// Import the HeroContent model
 const HeroContent = require('./models/HeroContent');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/ecellhero";
+// MongoDB connection URI
+const mongoURI = process.env.MONGO_URI || "mongodb+srv://UzzyDizzy:udit22@ecellhero.7vx5w.mongodb.net/";
 
-// MongoDB connection
-mongoose.connect(mongoURI)
+// Connect to MongoDB
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected"))
-  .catch(err => console.log(err));
+  .catch(err => console.log("MongoDB connection error:", err));
 
-// Updated endpoint to retrieve hero content from MongoDB
+// Endpoint to retrieve hero content from MongoDB
 app.get('/api/hero-content', async (req, res) => {
   try {
-    const heroContent = await HeroContent.findOne();
-    console.log("Fetched hero content:", heroContent); // Fetches the first document from the collection
-    if (!heroContent) {
+    const heroContent = await HeroContent.find(); // Retrieves all documents from the collection
+    if (!heroContent || heroContent.length === 0) {
       return res.status(404).json({ message: "Hero content not found" });
     }
     res.json(heroContent);
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching hero content:", error);
     res.status(500).json({ message: "Error fetching hero content" });
   }
 });
+
+// Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
-/*
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => console.log("MongoDB connected"))
-  .catch(err => console.log(err));
-
-// Simple endpoint for hero content
-app.get('/api/hero-content', (req, res) => {
-  res.json({
-    headline: "Empowering Visionaries, Inspiring Innovators",
-    subtext: "KIIT E-Cell fosters an entrepreneurial spirit in the youth.",
-    ctaLabel: "Get Involved"
-  });
-});
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-*/
